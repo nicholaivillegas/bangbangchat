@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -20,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         // Connect to the Firebase database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         // Get a reference to the todoItems child items it the database
         final DatabaseReference myRef = database.getReference("todoItems");
@@ -89,9 +91,13 @@ public class MainActivity extends AppCompatActivity {
 
                 // Create a new child with a auto-generated ID.
                 DatabaseReference childRef = myRef.push();
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                String formattedDate = df.format(c.getTime());
 
                 // Set the child's data to the value passed in from the text box.
-                childRef.setValue("ID:" + Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID) + "\n" + text.getText().toString());
+                childRef.setValue("ID:" + Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID) + " " + formattedDate + "\n" + text.getText().toString());
+                text.setText("");
             }
         });
 
